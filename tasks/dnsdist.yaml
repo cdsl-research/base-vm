@@ -1,0 +1,36 @@
+---
+- hosts:
+    - base-j
+  remote_user: cdsl
+  become: yes
+  tasks:
+    - name: Apt update
+      apt:
+        update_cache: yes
+    - name: Install dnsdist
+      apt:
+        name:
+          - dnsdist
+          - dnsutils
+    - name: Configure dnsdist.conf
+      copy:
+        src: ../files/dnsdist.conf
+        dest: /etc/dnsdist
+        mode: 0755
+    - name: Disable systemd-resolved
+      systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: no
+    - name: Remote resolv.conf
+      file:
+        path: /etc/resolv.conf
+        state: absent
+    - name: Set DNS Server
+      shell: echo "nameserver 127.0.0.1" > /etc/resolv.conf
+    - name: Start services
+      systemd:
+        name: dnsdist
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
