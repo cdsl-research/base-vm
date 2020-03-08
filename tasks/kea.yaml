@@ -1,0 +1,47 @@
+---
+- hosts:
+    - base-j
+  remote_user: cdsl
+  become: yes
+  tasks:
+    - name: Apt update
+      apt:
+        update_cache: no
+    - name: Install Dependencies
+      apt:
+        name:
+          - curl
+          - apt-transport-https
+          - rename
+    - name: Setup kea
+      shell: curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-1-6/cfg/setup/bash.deb.sh' | sudo bash
+    - name: Add GPG Key
+      shell: curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-1-6/cfg/gpg/gpg.0607E2621F1564A6.key' | apt-key add -
+    - name: Add Remote Repository
+      shell curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-1-6/cfg/setup/config.deb.txt?distro=ubuntu&codename=bionic' > /etc/apt/sources.list.d/isc-kea-1-6.list
+    - name: Apt update
+      apt:
+        update_cache: yes
+    - name: Install Dependencies
+      apt:
+        name:
+          - isc-kea-common
+          - isc-kea-dhcp4-server
+          - isc-kea-dhcp6-server
+          - isc-kea-dhcp-ddns-server
+          - isc-kea-admin
+          - isc-kea-dev
+          - isc-kea-doc
+          - isc-kea-ctrl-agent
+    - name: Configure dnsdist.conf
+      shell: sudo rename 's/conf/conf.org/' /etc/kea/*.conf
+    - name: Copy conf files
+      file:
+        src: ../files/xxx
+        path: /etc/kea/
+    - name: Start services
+      systemd:
+        name: isc-kea-dhcp4-server
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
