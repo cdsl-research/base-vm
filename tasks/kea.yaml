@@ -18,7 +18,7 @@
     - name: Add GPG Key
       shell: curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-1-6/cfg/gpg/gpg.0607E2621F1564A6.key' | apt-key add -
     - name: Add Remote Repository
-      shell curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-1-6/cfg/setup/config.deb.txt?distro=ubuntu&codename=bionic' > /etc/apt/sources.list.d/isc-kea-1-6.list
+      shell: curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-1-6/cfg/setup/config.deb.txt?distro=ubuntu&codename=bionic' > /etc/apt/sources.list.d/isc-kea-1-6.list
     - name: Apt update
       apt:
         update_cache: yes
@@ -36,9 +36,9 @@
     - name: Configure dnsdist.conf
       shell: sudo rename 's/conf/conf.org/' /etc/kea/*.conf
     - name: Copy conf files
-      file:
-        src: ../files/xxx
-        path: /etc/kea/
+      copy:
+        src: ../files/dnsdist.conf
+        dest: /etc/kea/
     - name: Start services
       systemd:
         name: isc-kea-dhcp4-server
