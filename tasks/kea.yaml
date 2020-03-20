@@ -33,11 +33,11 @@
           - isc-kea-dev
           - isc-kea-doc
           - isc-kea-ctrl-agent
-    - name: Configure dnsdist.conf
+    - name: Configure kea
       shell: rename 's/conf/conf.org/' /etc/kea/*.conf
     - name: Copy conf files
       copy:
-        src: ../files/dnsdist.conf
+        src: ../files/kea-dhcp4.conf
         dest: /etc/kea/
     - name: Start services
       systemd:
