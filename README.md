@@ -13,3 +13,7 @@ ansible-playbook -i hosts ./tasks/dnsdist.yaml -vvv --ask-pass --check
 ### Deploy
 ansible-playbook -i hosts ./tasks/dnsdist.yaml -v --ask-pass
 ```
+
+Version
+
+- Kea v1.6.2
