@@ -37,11 +37,25 @@
       shell: rename 's/conf/conf.org/' /etc/kea/*.conf
     - name: Copy conf files
       copy:
-        src: ../files/kea-dhcp4.conf
+        src: "{{item}}"
         dest: /etc/kea/
+      with_fileglob:
+        - "../files/kea-*.conf"
     - name: Start services
       systemd:
         name: isc-kea-dhcp4-server
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+    - name: Start services
+      systemd:
+        name: isc-kea-dhcp-ddns-server
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+    - name: Start services
+      systemd:
+        name: isc-kea-ctrl-agent
         state: restarted
         daemon_reload: yes
         enabled: yes
