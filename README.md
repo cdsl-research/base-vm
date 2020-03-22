@@ -1,6 +1,6 @@
 # base-vm
 
-Running
+Run
 
 ```
 python3 -m venv env
@@ -12,6 +12,9 @@ ansible-playbook -i hosts ./tasks/dnsdist.yaml -vvv --ask-pass --check
 
 ### Deploy
 ansible-playbook -i hosts ./tasks/dnsdist.yaml -v --ask-pass
+
+export SLACK_TOKEN=https://xxx
+ansible-playbook -i hosts ./tasks/kea-hook-runscript.yaml -v --ask-pass
 ```
 
 Version
