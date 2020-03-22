@@ -53,9 +53,9 @@
         state: restarted
         daemon_reload: yes
         enabled: yes
-    - name: Start services
+    - name: Set services state
       systemd:
         name: isc-kea-ctrl-agent
-        state: restarted
+        state: stopped
         daemon_reload: yes
         enabled: yes

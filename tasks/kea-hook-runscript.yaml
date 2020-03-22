@@ -1,0 +1,35 @@
+---
+- hosts:
+    - base-j
+  remote_user: cdsl
+  become: yes
+  tasks:
+    - name: Copy Zip
+      copy:
+        src: "../files/kea-hook-runscript-1.3.3.tar.gz"
+        dest: /tmp
+    - name: Extract tarball
+      shell: tar xvfz /tmp/kea-hook-runscript-1.3.3.tar.gz chdir=/tmp
+    - name: Install packages for build
+      apt:
+        name:
+          - libboost-dev
+          - isc-kea-dev
+          - g++
+          - make
+    - name: Compile
+      shell: make chdir=/tmp/kea-hook-runscript-1.3.3
+    - name: Copy conf files
+      shell: |
+        cp /tmp/kea-hook-runscript-1.3.3/kea-hook-runscript.so /etc/kea
+        chmod a+x /etc/kea/kea-hook-runscript.so
+    - name: Copy kea event handling script
+      copy:
+        src: "../files/kea-event.sh"
+        dest: /etc/kea
+    - name: Copy slack script
+      copy:
+        src: "../files/slack.py"
+        dest: /etc/kea
+    - name: Store slack token
+      shell: echo {{ lookup("env", "SLACK_TOKEN") }} > /etc/kea/slack_token
