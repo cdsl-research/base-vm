@@ -22,7 +22,7 @@
         name: systemd-resolved
         state: stopped
         enabled: no
-    - name: Remote resolv.conf
+    - name: Remove resolv.conf
       file:
         path: /etc/resolv.conf
         state: absent
