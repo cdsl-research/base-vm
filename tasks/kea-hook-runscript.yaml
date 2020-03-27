@@ -6,7 +6,7 @@
   tasks:
     - name: Copy Zip
       copy:
-        src: "../files/kea-hook-runscript-1.3.3.tar.gz"
+        src: "../files/kea/kea-hook-runscript-1.3.3.tar.gz"
         dest: /tmp
     - name: Extract tarball
       shell: tar xvfz /tmp/kea-hook-runscript-1.3.3.tar.gz chdir=/tmp
@@ -25,11 +25,11 @@
         chmod a+x /etc/kea/kea-hook-runscript.so
     - name: Copy kea event handling script
       copy:
-        src: "../files/kea-event.sh"
+        src: "../files/kea/kea-event.sh"
         dest: /etc/kea
     - name: Copy slack script
       copy:
-        src: "../files/slack.py"
+        src: "../files/kea/slack.py"
         dest: /etc/kea
     - name: Store slack token
       shell: echo {{ lookup("env", "SLACK_TOKEN") }} > /etc/kea/slack_token

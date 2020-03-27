@@ -40,7 +40,7 @@
         src: "{{item}}"
         dest: /etc/kea/
       with_fileglob:
-        - "../files/kea-*.conf"
+        - "../files/kea/kea-*.conf"
     - name: Start services
       systemd:
         name: isc-kea-dhcp4-server
