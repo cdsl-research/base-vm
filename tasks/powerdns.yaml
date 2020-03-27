@@ -1,0 +1,51 @@
+---
+- hosts:
+    - base-j
+  remote_user: cdsl
+  become: yes
+  tasks:
+    - name: Add repository
+      shell: echo "deb [arch=amd64] http://repo.powerdns.com/ubuntu bionic-auth-master main"  | sudo tee /etc/apt/sources.list.d/pdns.list
+    - name: Copy conf file
+      copy:
+        src: ../files/pdns
+        dest: /etc/apt/preferences.d
+    - name: Install curl
+      apt:
+        name:
+          - curl
+          - rename
+    - name: Add key
+      shell: curl https://repo.powerdns.com/CBC8B383-pub.asc | sudo apt-key add - 
+    - name: Apt update
+      apt:
+        update_cache: yes
+    - name: Install PowerDNS Authoritative
+      apt:
+        name:
+          - pdns-server
+          - pdns-backend-sqlite3
+    - name: Configure conf file
+      shell: rename 's/conf/conf.org/' /etc/powerdns/*.conf
+    - name: Configure pdns.conf
+      copy:
+        src: ../files/pdns.conf
+        dest: /etc/powerdns
+        mode: 0755
+    - name: Disable systemd-resolved
+      systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: no
+    - name: Remove resolv.conf
+      file:
+        path: /etc/resolv.conf
+        state: absent
+    - name: Set DNS Server
+      shell: echo "nameserver 127.0.0.1" > /etc/resolv.conf
+    - name: Start services
+      systemd:
+        name: pdns
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
