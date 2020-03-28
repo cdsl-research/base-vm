@@ -77,7 +77,32 @@ $ linstor resource list
 ┊ share_store  ┊ base-m ┊ 7020 ┊ Unused ┊ Ok    ┊ SyncTarget(39.21%) ┊
 ╰────────────────────────────────────────────────────────────────────╯
 
-# TODO
+# Finished
+$ linstor resource list
+╭──────────────────────────────────────────────────────────╮
+┊ ResourceName ┊ Node   ┊ Port ┊ Usage  ┊ Conns ┊    State ┊
+╞══════════════════════════════════════════════════════════╡
+┊ share_store  ┊ base-j ┊ 7020 ┊ Unused ┊ Ok    ┊ UpToDate ┊
+┊ share_store  ┊ base-m ┊ 7020 ┊ Unused ┊ Ok    ┊ UpToDate ┊
+╰──────────────────────────────────────────────────────────╯
+
+# Edit conf
+$ vim /var/lib/linstor.d/share_store.re
+net
+{
+    cram-hmac-alg     sha1;
+    shared-secret     "XXXXXXXXX";
+
+    # ADD THIS
+    allow-two-primaries yes;
+}
+
+# Adjust
+drbdadm adjust share_store
+
+# Check mount
+$ mount | grep drbd
+/dev/drbd1012 on /drbd type ext4 (rw,relatime,data=ordered)
 ```
 
 ## [2] Install kea/stns/powerdns
