@@ -94,15 +94,20 @@ net
     shared-secret     "XXXXXXXXX";
 
     # ADD THIS
+    protocol C;
     allow-two-primaries yes;
+    fencing resource-and-stonith;
 }
 
 # Adjust
-drbdadm adjust share_store
+sudo drbdadm adjust share_store
 
 # Check mount
 $ mount | grep drbd
 /dev/drbd1012 on /drbd type ext4 (rw,relatime,data=ordered)
+
+# Check status
+drbdadm status
 ```
 
 ## [2] Install kea/stns/powerdns
